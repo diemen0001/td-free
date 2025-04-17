@@ -83,7 +83,7 @@ fn main() -> Result<(), ()> {
     let peripherals = Peripherals::take().unwrap();
 
     let i2c_sda = peripherals.pins.gpio8;
-    let i2c_scl = peripherals.pins.gpio9;
+    let i2c_scl = peripherals.pins.gpio10;
     let rgb_led_pin = peripherals.pins.gpio21;
 
     let light_timer_driver = LedcTimerDriver::new(
@@ -116,7 +116,7 @@ fn main() -> Result<(), ()> {
     ws2812.lock().unwrap().write_nocopy(pixels).unwrap();
 
     let config = I2cConfig::new()
-        .baudrate(20.kHz().into())
+        .baudrate(100.kHz().into())
         .timeout(Duration::from_millis(100).into());
     let i2c = I2cDriver::new(peripherals.i2c0, i2c_sda, i2c_scl, &config).unwrap();
 
