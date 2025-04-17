@@ -156,7 +156,7 @@ fn main() -> Result<(), ()> {
     let mut wifi = AsyncWifi::wrap(driver, sysloop, timer_service).unwrap();
 
     let veml: Arc<Mutex<Veml7700<I2cDriver<'_>>>> = Arc::new(Mutex::new(Veml7700::new(i2c)));
-    led_light.lock().unwrap().set_duty_cycle_fully_on().unwrap();
+    led_light.lock().unwrap().set_duty(50).unwrap();
     FreeRtos.delay_ms(500);
     match veml.lock().unwrap().enable() {
         Ok(()) => (),
@@ -164,7 +164,7 @@ fn main() -> Result<(), ()> {
     };
 
     let baseline_reading: f32 = take_baseline_reading(veml.clone());
-    led_light.lock().unwrap().set_duty(25).unwrap();
+    led_light.lock().unwrap().set_duty(12).unwrap();
     FreeRtos.delay_ms(200);
     let dark_baseline_reading: f32 = take_baseline_reading(veml.clone());
     log::info!("Baseline readings completed");
