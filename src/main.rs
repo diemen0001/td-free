@@ -130,12 +130,8 @@ fn main() -> Result<(), ()> {
     let driver = EspWifi::wrap_all(
         wifi_raw_driver,
         EspNetif::new_with_conf(&NetifConfiguration {
-            ip_configuration: Some(IpConfiguration::Client(IpClientConfiguration::Static(
-                StaticClientConfiguration {
-                    ip: Ipv4Addr::new(192, 168, 50, 101).into(),  // Your static IP
-                    subnet: Ipv4Addr::new(255, 255, 255, 0).into(), // Subnet mask
-                    gateway: Some(Ipv4Addr::new(192, 168, 50, 1).into()), // Gateway
-                    dns_servers: vec![Ipv4Addr::new(8, 8, 8, 8).into()], // DNS servers
+            ip_configuration: Some(IpConfiguration::Client(IpClientConfiguration::DHCP(
+                DHCPClientSettings {
                     hostname: Some("tdfree_1".try_into().unwrap()),
                 },
             ))),
