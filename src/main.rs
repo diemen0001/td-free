@@ -130,9 +130,13 @@ fn main() -> Result<(), ()> {
     let driver = EspWifi::wrap_all(
         wifi_raw_driver,
         EspNetif::new_with_conf(&NetifConfiguration {
-            ip_configuration: Some(IpConfiguration::Client(IpClientConfiguration::DHCP(
-                DHCPClientSettings {
-                    hostname: Some("tdfree".try_into().unwrap()),
+            ip_configuration: Some(IpConfiguration::Client(IpClientConfiguration::Static(
+                StaticClientConfiguration {
+                    ip: Ipv4Addr::new(192, 168, 50, 101).into(),  // Your static IP
+                    subnet: Ipv4Addr::new(255, 255, 255, 0).into(), // Subnet mask
+                    gateway: Some(Ipv4Addr::new(192, 168, 50, 1).into()), // Gateway
+                    dns_servers: vec![Ipv4Addr::new(8, 8, 8, 8).into()], // DNS servers
+                    hostname: Some("tdfree_1".try_into().unwrap()),
                 },
             ))),
             ..NetifConfiguration::wifi_default_client()
@@ -156,7 +160,7 @@ fn main() -> Result<(), ()> {
     let mut wifi = AsyncWifi::wrap(driver, sysloop, timer_service).unwrap();
 
     let veml: Arc<Mutex<Veml7700<I2cDriver<'_>>>> = Arc::new(Mutex::new(Veml7700::new(i2c)));
-    led_light.lock().unwrap().set_duty(25).unwrap();
+    led_light.lock().unwrap().set_duty_cycle_fully_on().unwrap();
     FreeRtos.delay_ms(500);
     match veml.lock().unwrap().enable() {
         Ok(()) => (),
@@ -164,7 +168,7 @@ fn main() -> Result<(), ()> {
     };
 
     let baseline_reading: f32 = take_baseline_reading(veml.clone());
-    led_light.lock().unwrap().set_duty(6).unwrap();
+    led_light.lock().unwrap().set_duty(25).unwrap();
     FreeRtos.delay_ms(200);
     let dark_baseline_reading: f32 = take_baseline_reading(veml.clone());
     log::info!("Baseline readings completed");
