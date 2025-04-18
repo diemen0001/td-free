@@ -317,7 +317,7 @@ async fn read_data(
         set_led(ws2812.clone(), 0, 125, 125);
         {
             let mut led = led_light.lock().unwrap();
-            if let Err(e) = led.set_duty(25) {
+            if let Err(e) = led.set_duty_cycle_fully_on() {
                 log::error!("Failed to set LED duty cycle: {:?}", e);
                 return None;
             }
@@ -336,7 +336,7 @@ async fn read_data(
         ws_message = adjusted_td_value.to_string();
         {
             let mut led = led_light.lock().unwrap();
-            if let Err(e) = led.set_duty(6) {
+            if let Err(e) = led.set_duty(25) {
                 log::error!("Failed to adjust LED duty: {:?}", e);
             }
         }
@@ -380,7 +380,7 @@ async fn read_averaged_data(
         set_led(ws2812.clone(), 0, 125, 125);
         {
             let mut led = led_light.lock().unwrap();
-            if let Err(e) = led.set_duty(25) {
+            if let Err(e) = led.set_duty_cycle_fully_on() {
                 log::error!("Failed to set LED duty cycle: {:?}", e);
                 return None;
             }
@@ -400,7 +400,7 @@ async fn read_averaged_data(
         }
         {
             let mut led = led_light.lock().unwrap();
-            if let Err(e) = led.set_duty(6) {
+            if let Err(e) = led.set_duty(25) {
                 log::error!("Failed to adjust LED duty: {:?}", e);
             }
         }
